@@ -1,0 +1,50 @@
+<ng-container class="form" [formGroup]="form">
+  <app-internalization-tabs></app-internalization-tabs>
+
+  <label class="form__field">
+    Display name
+
+    <input
+      *ngIf="displayName | internalization | async as control"
+      [formControl]="$any(control)"
+      type="text"
+    />
+  </label>
+
+  Items:
+
+  <ng-container
+    formArrayName="items"
+    *ngFor="let item of items.controls; let index = index"
+  >
+    <div class="item" [formGroupName]="index">
+      <label class="form__field">
+        Name
+
+        <input
+          *ngIf="
+            $any(items.at(index)).controls.name
+              | internalization
+              | async as control
+          "
+          [formControl]="$any(control)"
+          type="text"
+        />
+      </label>
+
+      <label class="form__field">
+        Description
+
+        <input
+          *ngIf="
+            $any(items.at(index)).controls.description
+              | internalization
+              | async as control
+          "
+          [formControl]="$any(control)"
+          type="text"
+        />
+      </label>
+    </div>
+  </ng-container>
+</ng-container>

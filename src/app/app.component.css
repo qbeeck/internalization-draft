@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  gap: 20px;
+
+  margin-bottom: 10px;
+}
+
+.wrapper__button {
+  flex: 1;
+}

@@ -1,0 +1,23 @@
+<ng-container class="form" [formGroup]="form">
+  <app-internalization-tabs></app-internalization-tabs>
+
+  <label class="form__field">
+    Name
+    <input formControlName="name" type="text" />
+  </label>
+
+  <label class="form__field">
+    Display name
+
+    <input
+      *ngIf="displayName | internalization | async as control"
+      [formControl]="$any(control)"
+      type="text"
+    />
+  </label>
+
+  <label class="form__field">
+    Price
+    <input formControlName="price" type="text" />
+  </label>
+</ng-container>

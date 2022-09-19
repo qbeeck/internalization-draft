@@ -1,0 +1,7 @@
+<ng-container *ngIf="show">
+  <app-form [form]="form"></app-form>
+
+  <pre>{{ form.value | json }}</pre>
+</ng-container>
+
+<button (click)="show = !show">Show</button>
