@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 
+import { InternalizationPipeModule } from './pipes';
 import {
-  InternalizationPipeModule,
-  InternalizationUpdatedModule,
-} from './pipes';
-import { InternalizationTabsModule } from './components';
+  InternalizationTabsModule,
+  InternalizationTabsUpdatedModule,
+} from './components';
 
 @NgModule({
   imports: [
     InternalizationPipeModule,
-    InternalizationUpdatedModule,
+    InternalizationTabsUpdatedModule,
     InternalizationTabsModule,
   ],
   exports: [
     InternalizationPipeModule,
-    InternalizationUpdatedModule,
+    InternalizationTabsUpdatedModule,
     InternalizationTabsModule,
   ],
 })

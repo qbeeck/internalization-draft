@@ -1,0 +1,13 @@
+<ng-container *ngIf="currentTab$ | async as currentTab">
+  <button
+    *ngFor="let lang of languages"
+    [ngStyle]="{
+      'background-color': currentTab === lang ? 'yellow' : 'white'
+    }"
+    (click)="changeLanguage(lang)"
+    class="button"
+    type="button"
+  >
+    {{ lang }}
+  </button>
+</ng-container>
