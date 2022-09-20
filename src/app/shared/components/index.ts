@@ -1,1 +1,1 @@
-export * from './internalization-tabs/internalization-tabs.component';
+export * from './internalization-tabs/internalization-tabs.module';
