@@ -1,0 +1,16 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__field {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  padding: 10px;
+  border: 1px solid green;
+  margin-bottom: 10px;
+}
