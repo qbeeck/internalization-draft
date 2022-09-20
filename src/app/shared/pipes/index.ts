@@ -1,1 +1,1 @@
-export * from './internalization/internalization.pipe';
+export * from './internalization/internalization.module';
