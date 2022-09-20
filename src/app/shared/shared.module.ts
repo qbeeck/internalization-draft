@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { InternalizationPipeModule } from './pipes';
 import { InternalizationTabsModule } from './components';
