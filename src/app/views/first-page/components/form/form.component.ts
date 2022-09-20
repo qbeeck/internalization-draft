@@ -11,6 +11,6 @@ export class FormComponent {
   @Input() form: FormGroup;
 
   get displayName() {
-    return this.form.get('displayName');
+    return this.form.get('displayName') as FormGroup;
   }
 }
