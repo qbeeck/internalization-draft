@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
-import { internalizationValidator } from '../../shared/helpers';
+
+import {
+  flatNestedObject,
+  formNestedErrors,
+  internalizationValidator,
+} from '../../shared/helpers';
 
 @Component({
   selector: 'app-third-page',
@@ -24,11 +23,7 @@ export class ThirdPageComponent {
   constructor(private _fb: FormBuilder) {
     this.form = this._form;
 
-    this.errors$ = this.form.valueChanges.pipe(
-      startWith(this.form),
-      map(() => this._getFormErrors(this.form)),
-      map((formErrors) => this._flatObject(formErrors))
-    );
+    this.errors$ = this._errors;
   }
 
   showForm() {
@@ -46,7 +41,7 @@ export class ThirdPageComponent {
           he: 'he label',
         },
         {
-          validators: [internalizationValidator],
+          validators: [internalizationValidator()],
         }
       ),
       items: this._fb.array([
@@ -60,7 +55,7 @@ export class ThirdPageComponent {
               he: 'item he label name',
             },
             {
-              validators: [internalizationValidator],
+              validators: [internalizationValidator()],
             }
           ),
           description: this._fb.group(
@@ -72,7 +67,7 @@ export class ThirdPageComponent {
               he: 'item he label description',
             },
             {
-              validators: [internalizationValidator],
+              validators: [internalizationValidator()],
             }
           ),
         }),
@@ -80,37 +75,11 @@ export class ThirdPageComponent {
     });
   }
 
-  private _getFormErrors(form: AbstractControl) {
-    if (form instanceof FormControl) {
-      // Return FormControl errors or null
-      return form.errors ?? null;
-    }
-
-    if (form instanceof FormGroup || form instanceof FormArray) {
-      const formErrors = {};
-
-      Object.keys(form.controls).forEach((key) => {
-        // Recursive call of the FormGroup fields
-        const error = this._getFormErrors(form.get(key));
-        if (error !== null) {
-          // Only add error if not null
-          formErrors[key] = error;
-        }
-      });
-      // Return FormGroup errors or null
-      return Object.keys(formErrors).length > 0 ? formErrors : null;
-    }
-  }
-
-  private _flatObject(obj: Object) {
-    return Object.keys(obj || {}).reduce((acc, cur) => {
-      if (typeof obj[cur] === 'object') {
-        acc = { ...acc, ...this._flatObject(obj[cur]) };
-      } else {
-        acc[cur] = obj[cur];
-      }
-
-      return acc;
-    }, {});
+  private get _errors() {
+    return this.form.valueChanges.pipe(
+      startWith(this.form),
+      map(() => formNestedErrors(this.form)),
+      map((formErrors) => flatNestedObject(formErrors))
+    );
   }
 }
