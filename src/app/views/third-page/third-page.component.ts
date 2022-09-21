@@ -7,6 +7,7 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
+import { internalizationValidator } from '../../shared/helpers';
 
 @Component({
   selector: 'app-third-page',
@@ -45,7 +46,7 @@ export class ThirdPageComponent {
           he: 'he label',
         },
         {
-          validators: [this._internalizationValidator],
+          validators: [internalizationValidator],
         }
       ),
       items: this._fb.array([
@@ -59,7 +60,7 @@ export class ThirdPageComponent {
               he: 'item he label name',
             },
             {
-              validators: [this._internalizationValidator],
+              validators: [internalizationValidator],
             }
           ),
           description: this._fb.group(
@@ -71,24 +72,12 @@ export class ThirdPageComponent {
               he: 'item he label description',
             },
             {
-              validators: [this._internalizationValidator],
+              validators: [internalizationValidator],
             }
           ),
         }),
       ]),
     });
-  }
-
-  private get _internalizationValidator() {
-    return (group: FormGroup) => {
-      for (let key in group.controls) {
-        if (!group.controls[key].value) {
-          group.controls[key].setErrors({ [key]: true });
-        } else {
-          group.controls[key].setErrors(null);
-        }
-      }
-    };
   }
 
   private _getFormErrors(form: AbstractControl) {
