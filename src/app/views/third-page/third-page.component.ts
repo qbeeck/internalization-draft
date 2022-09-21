@@ -54,7 +54,17 @@ export class ThirdPageComponent {
 
   private get _internalizationValidator() {
     return (group: FormGroup) => {
-      const rootForm = this._rootForm(group) as FormGroup;
+      let rootForm: any = group;
+
+      while (rootForm.parent) {
+        if (rootForm.parent) {
+          continue;
+        } else {
+          break;
+        }
+      }
+
+      console.log(rootForm);
 
       for (let key in group.controls) {
         !group.controls[key].value
