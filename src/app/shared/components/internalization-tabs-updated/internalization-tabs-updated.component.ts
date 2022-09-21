@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first, map, Observable, tap } from 'rxjs';
 
@@ -9,6 +14,7 @@ import { first, map, Observable, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalizationTabsUpdatedComponent implements OnDestroy {
+  @Input() errors: any = {};
   languages = ['en', 'fr', 'de', 'dk', 'he'];
 
   currentTab$: Observable<string>;

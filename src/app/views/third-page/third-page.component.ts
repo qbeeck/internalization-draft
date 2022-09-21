@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-third-page',
@@ -17,13 +17,16 @@ export class ThirdPageComponent {
 
   private get _form() {
     return this._fb.group({
-      displayName: this._fb.group({
-        en: 'en label',
-        fr: 'fr label',
-        de: 'de label',
-        dk: 'dk label',
-        he: 'he label',
-      }),
+      displayName: this._fb.group(
+        {
+          en: 'en label',
+          fr: 'fr label',
+          de: 'de label',
+          dk: 'dk label',
+          he: 'he label',
+        },
+        { validators: [this._internalizationValidator] }
+      ),
       items: this._fb.array([
         this._fb.group({
           name: this._fb.group({
@@ -43,5 +46,23 @@ export class ThirdPageComponent {
         }),
       ]),
     });
+  }
+
+  private get _internalizationValidator() {
+    return (group: FormGroup) => {
+      const rootForm = this._rootForm(group);
+
+      for (let key in group.controls) {
+        !group.controls[key].value
+          ? rootForm.setErrros({ [key]: true })
+          : rootForm.setErrros({ [key]: null });
+      }
+    };
+  }
+
+  private _rootForm(form: AbstractControl) {
+    if (!form.parent) return form;
+
+    return this._rootForm(form.parent);
   }
 }
