@@ -15,6 +15,10 @@ export class ThirdPageComponent {
     this.form = this._form;
   }
 
+  showForm() {
+    console.log(this.form);
+  }
+
   private get _form() {
     return this._fb.group({
       displayName: this._fb.group(
@@ -50,12 +54,12 @@ export class ThirdPageComponent {
 
   private get _internalizationValidator() {
     return (group: FormGroup) => {
-      const rootForm = this._rootForm(group);
+      const rootForm = this._rootForm(group) as FormGroup;
 
       for (let key in group.controls) {
         !group.controls[key].value
-          ? rootForm.setErrros({ [key]: true })
-          : rootForm.setErrros({ [key]: null });
+          ? rootForm.setErrors({ [key]: true })
+          : rootForm.setErrors({ [key]: null });
       }
     };
   }
