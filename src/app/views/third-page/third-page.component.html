@@ -1,5 +1,5 @@
 <ng-container *ngIf="show">
-  <app-form [form]="form"></app-form>
+  <app-form [form]="form" [errors]="errors$ | async"></app-form>
 
   <pre>{{ form.value | json }}</pre>
 </ng-container>

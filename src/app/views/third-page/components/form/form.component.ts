@@ -9,6 +9,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 })
 export class FormComponent {
   @Input() form: FormGroup;
+  @Input() errors: any;
 
   get displayName() {
     return this.form.get('displayName') as FormGroup;

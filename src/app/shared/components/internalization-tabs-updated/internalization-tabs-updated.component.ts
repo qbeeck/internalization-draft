@@ -4,12 +4,6 @@ import {
   Input,
   OnDestroy,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first, map, Observable, tap } from 'rxjs';
 
@@ -20,12 +14,10 @@ import { first, map, Observable, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalizationTabsUpdatedComponent implements OnDestroy {
-  @Input() form: FormGroup;
+  @Input() errors: any;
   languages = ['en', 'fr', 'de', 'dk', 'he'];
 
   currentTab$: Observable<string>;
-
-  errors: any = {};
 
   constructor(private _route: ActivatedRoute, private _router: Router) {
     this.currentTab$ = this._currentTab;
@@ -63,27 +55,5 @@ export class InternalizationTabsUpdatedComponent implements OnDestroy {
 
   private get _currentTab() {
     return this._route.queryParams.pipe(map((queryParams) => queryParams.lang));
-  }
-
-  private _getFormErrors(form: AbstractControl) {
-    if (form instanceof FormControl) {
-      // Return FormControl errors or null
-      return form.errors ?? null;
-    }
-    if (form instanceof FormGroup || form instanceof FormArray) {
-      const groupErrors = form.errors;
-      // Form group can contain errors itself, in that case add'em
-      const formErrors = groupErrors ? { groupErrors } : {};
-      Object.keys(form.controls).forEach((key) => {
-        // Recursive call of the FormGroup fields
-        const error = this._getFormErrors(form.get(key));
-        if (error !== null) {
-          // Only add error if not null
-          formErrors[key] = error;
-        }
-      });
-      // Return FormGroup errors or null
-      return Object.keys(formErrors).length > 0 ? formErrors : null;
-    }
   }
 }
