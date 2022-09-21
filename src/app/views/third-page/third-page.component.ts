@@ -23,11 +23,13 @@ export class ThirdPageComponent {
   constructor(private _fb: FormBuilder) {
     this.form = this._form;
 
-    this.form.valueChanges.pipe(
-      startWith(this._form),
-      map(form => this._getFormErrors(form as any)),
-      tap(console.log),
-    ).subscribe();
+    this.form.valueChanges
+      .pipe(
+        startWith(this.form),
+        map(() => this._getFormErrors(this.form as any)),
+        tap((va) => console.log(this._crushObj(va)))
+      )
+      .subscribe();
   }
 
   showForm() {
@@ -81,17 +83,37 @@ export class ThirdPageComponent {
 
   private get _internalizationValidator() {
     return (group: FormGroup) => {
-      const err = {};
-
       for (let key in group.controls) {
         if (!group.controls[key].value) {
-          err[key] = true;
+          group.controls[key].setErrors({ [key]: true });
+        } else {
+          group.controls[key].setErrors(null);
         }
       }
-
-      return err;
     };
   }
+
+  // private _getFormErrors(form: AbstractControl) {
+  //   if (form instanceof FormControl) {
+  //     // Return FormControl errors or null
+  //     return form.errors ?? null;
+  //   }
+  //   if (form instanceof FormGroup || form instanceof FormArray) {
+  //     const formErrors = {};
+
+  //     Object.keys(form.controls).forEach((key) => {
+  //       // Recursive call of the FormGroup fields
+  //       const error = this._getFormErrors(form.get(key));
+  //       console.log("error", error, key);
+  //       if (error !== null) {
+  //         // Only add error if not null
+  //         formErrors[key] = error;
+  //       }
+  //     });
+  //     // Return FormGroup errors or null
+  //     return Object.keys(formErrors).length > 0 ? formErrors : null;
+  //   }
+  // }
 
   private _getFormErrors(form: AbstractControl) {
     if (form instanceof FormControl) {
@@ -99,9 +121,8 @@ export class ThirdPageComponent {
       return form.errors ?? null;
     }
     if (form instanceof FormGroup || form instanceof FormArray) {
-      const groupErrors = form.errors;
-      // Form group can contain errors itself, in that case add'em
-      const formErrors = groupErrors ? { groupErrors } : {};
+      const formErrors = {};
+
       Object.keys(form.controls).forEach((key) => {
         // Recursive call of the FormGroup fields
         const error = this._getFormErrors(form.get(key));
@@ -113,5 +134,17 @@ export class ThirdPageComponent {
       // Return FormGroup errors or null
       return Object.keys(formErrors).length > 0 ? formErrors : null;
     }
+  }
+
+  private _crushObj(obj = {}) {
+    return Object.keys(obj || {}).reduce((acc, cur) => {
+      if (typeof obj[cur] === 'object') {
+        acc = { ...acc, ...this._crushObj(obj[cur]) };
+      } else {
+        acc[cur] = obj[cur];
+      }
+
+      return acc;
+    }, {});
   }
 }
