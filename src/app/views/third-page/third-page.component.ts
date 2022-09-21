@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
+import { map, Observable, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-third-page',
@@ -11,10 +18,16 @@ export class ThirdPageComponent {
   show = true;
   form: FormGroup;
 
-  localForm: any;
+  errors$: Observable<any>;
 
   constructor(private _fb: FormBuilder) {
     this.form = this._form;
+
+    this.form.valueChanges.pipe(
+      startWith(this._form),
+      map(form => this._getFormErrors(form as any)),
+      tap(console.log),
+    ).subscribe();
   }
 
   showForm() {
@@ -37,50 +50,68 @@ export class ThirdPageComponent {
       ),
       items: this._fb.array([
         this._fb.group({
-          name: this._fb.group({
-            en: 'item en label name',
-            fr: 'item fr label name',
-            de: 'item de label name',
-            dk: 'item dk label name',
-            he: 'item he label name',
-          }),
-          description: this._fb.group({
-            en: 'item en label description',
-            fr: 'item fr label description',
-            de: 'item de label description',
-            dk: 'item dk label description',
-            he: 'item he label description',
-          }),
+          name: this._fb.group(
+            {
+              en: 'item en label name',
+              fr: 'item fr label name',
+              de: 'item de label name',
+              dk: 'item dk label name',
+              he: 'item he label name',
+            },
+            {
+              validators: [this._internalizationValidator],
+            }
+          ),
+          description: this._fb.group(
+            {
+              en: 'item en label description',
+              fr: 'item fr label description',
+              de: 'item de label description',
+              dk: 'item dk label description',
+              he: 'item he label description',
+            },
+            {
+              validators: [this._internalizationValidator],
+            }
+          ),
         }),
       ]),
     });
   }
 
-  test() {
-    console.log(this.form === this.localForm);
-  }
-
   private get _internalizationValidator() {
     return (group: FormGroup) => {
-      if (!group.parent) return;
-
-      let rootForm = this._rootForm(group);
+      const err = {};
 
       for (let key in group.controls) {
-        !group.controls[key].value
-          ? rootForm.setErrors({ [key]: true })
-          : rootForm.setErrors({ [key]: false });
+        if (!group.controls[key].value) {
+          err[key] = true;
+        }
       }
 
-      console.log(rootForm);
-
-      this.localForm = rootForm;
+      return err;
     };
   }
 
-  private _rootForm(form: AbstractControl) {
-    if (!form.parent) return form;
-
-    return this._rootForm(form.parent);
+  private _getFormErrors(form: AbstractControl) {
+    if (form instanceof FormControl) {
+      // Return FormControl errors or null
+      return form.errors ?? null;
+    }
+    if (form instanceof FormGroup || form instanceof FormArray) {
+      const groupErrors = form.errors;
+      // Form group can contain errors itself, in that case add'em
+      const formErrors = groupErrors ? { groupErrors } : {};
+      Object.keys(form.controls).forEach((key) => {
+        // Recursive call of the FormGroup fields
+        const error = this._getFormErrors(form.get(key));
+        if (error !== null) {
+          // Only add error if not null
+          formErrors[key] = error;
+        }
+      });
+      // Return FormGroup errors or null
+      return Object.keys(formErrors).length > 0 ? formErrors : null;
+    }
   }
 }
