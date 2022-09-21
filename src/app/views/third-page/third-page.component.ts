@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
 import { IFormInternalizationErrors } from '../../shared/types';
-
 import {
   flatNestedObject,
   formNestedErrors,
@@ -60,15 +59,13 @@ export class ThirdPageComponent {
               validators: [internalizationValidator()],
             }
           ),
-          description: this._fb.group(
-            {
-              en: 'item en label description',
-              fr: 'item fr label description',
-              de: 'item de label description',
-              dk: 'item dk label description',
-              he: 'item he label description',
-            }
-          ),
+          description: this._fb.group({
+            en: 'item en label description',
+            fr: 'item fr label description',
+            de: 'item de label description',
+            dk: 'item dk label description',
+            he: 'item he label description',
+          }),
         }),
       ]),
     });
