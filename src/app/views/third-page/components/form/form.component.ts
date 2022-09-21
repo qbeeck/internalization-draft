@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
+import { IFormInternalizationErrors } from '../../../../shared/types';
+
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -9,7 +11,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 })
 export class FormComponent {
   @Input() form: FormGroup;
-  @Input() errors: any;
+  @Input() errors: IFormInternalizationErrors;
 
   get displayName() {
     return this.form.get('displayName') as FormGroup;

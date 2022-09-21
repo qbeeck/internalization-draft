@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
+import { IFormInternalizationErrors } from '../../shared/types';
+
 import {
   flatNestedObject,
   formNestedErrors,
@@ -18,7 +20,7 @@ export class ThirdPageComponent {
   show = true;
   form: FormGroup;
 
-  errors$: Observable<any>;
+  errors$: Observable<IFormInternalizationErrors>;
 
   constructor(private _fb: FormBuilder) {
     this.form = this._form;
@@ -65,9 +67,6 @@ export class ThirdPageComponent {
               de: 'item de label description',
               dk: 'item dk label description',
               he: 'item he label description',
-            },
-            {
-              validators: [internalizationValidator()],
             }
           ),
         }),

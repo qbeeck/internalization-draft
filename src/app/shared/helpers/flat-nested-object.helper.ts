@@ -1,3 +1,5 @@
+import { IFormInternalizationErrors } from '../types';
+
 export const flatNestedObject = (object: Object) => {
   return Object.keys(object || {}).reduce((acc, cur) => {
     if (typeof object[cur] === 'object') {
@@ -7,5 +9,5 @@ export const flatNestedObject = (object: Object) => {
     }
 
     return acc;
-  }, {});
+  }, {} as IFormInternalizationErrors);
 };
