@@ -11,6 +11,8 @@ export class ThirdPageComponent {
   show = true;
   form: FormGroup;
 
+  localForm: any;
+
   constructor(private _fb: FormBuilder) {
     this.form = this._form;
   }
@@ -29,7 +31,9 @@ export class ThirdPageComponent {
           dk: 'dk label',
           he: 'he label',
         },
-        { validators: [this._internalizationValidator] }
+        {
+          validators: [this._internalizationValidator],
+        }
       ),
       items: this._fb.array([
         this._fb.group({
@@ -52,25 +56,25 @@ export class ThirdPageComponent {
     });
   }
 
+  test() {
+    console.log(this.form === this.localForm);
+  }
+
   private get _internalizationValidator() {
     return (group: FormGroup) => {
-      let rootForm: any = group;
+      if (!group.parent) return;
 
-      while (rootForm.parent) {
-        if (rootForm.parent) {
-          continue;
-        } else {
-          break;
-        }
-      }
-
-      console.log(rootForm);
+      let rootForm = this._rootForm(group);
 
       for (let key in group.controls) {
         !group.controls[key].value
           ? rootForm.setErrors({ [key]: true })
-          : rootForm.setErrors({ [key]: null });
+          : rootForm.setErrors({ [key]: false });
       }
+
+      console.log(rootForm);
+
+      this.localForm = rootForm;
     };
   }
 
